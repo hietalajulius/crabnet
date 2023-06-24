@@ -17,13 +17,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut nn = NN::new(2, 8, 8, 1, &mut rng);
     let mut loss = MSE::new();
 
-    let batch_size = 64;
+    let batch_size = 16;
 
-    let mut learning_rate = 0.0015;
+    let mut learning_rate = 0.013;
 
     let mut running_loss = VecDeque::with_capacity(1000);
 
-    for i in 0..1000000 {
+    for i in 0..5000000 {
         let x: Array2<f64> = Array2::from_shape_fn((batch_size, 2), |_| rng.gen_range(-3.0..=3.0));
         let pdf_values: Array1<f64> = x
             .axis_iter(ndarray::Axis(0))
@@ -57,7 +57,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Iter {:?}, loss: {:?}", i, avg_loss);
         }
 
-        if i % 50000 == 0 && i > 1 {
+        if i % 500000 == 0 && i > 1 {
             nn.plot(i)?;
         }
 
