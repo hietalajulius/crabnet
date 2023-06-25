@@ -34,14 +34,10 @@ impl NN {
 
     pub fn get_output(&self, x: &Array2<f64>) -> Array2<f64> {
         // Forward pass through the neural network to compute the output
-        let x = self
-            .activation_fn1
-            .get_output(&self.fc1.get_output(x, &self.fc1.W, &self.fc1.b));
-        let x = self
-            .activation_fn2
-            .get_output(&self.fc2.get_output(&x, &self.fc2.W, &self.fc2.b));
+        let x = ReLU::get_output(&LinearLayer::get_output(x, &self.fc1.W, &self.fc1.b));
+        let x = ReLU::get_output(&LinearLayer::get_output(&x, &self.fc2.W, &self.fc2.b));
 
-        self.fc3.get_output(&x, &self.fc3.W, &self.fc3.b)
+        LinearLayer::get_output(&x, &self.fc3.W, &self.fc3.b)
     }
 
     pub fn forward(&mut self, x: &Array2<f64>) -> Array2<f64> {

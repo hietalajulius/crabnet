@@ -12,7 +12,7 @@ impl MSE {
     }
 
     /// Get the output of the MSE loss function.
-    fn get_output(&self, x: &Array2<f64>, target: &Array2<f64>) -> f64 {
+    fn get_output(x: &Array2<f64>, target: &Array2<f64>) -> f64 {
         // Calculate the error between target and x
         let error = target - x;
 
@@ -30,7 +30,7 @@ impl MSE {
         self.dL_dx = Some(dL_dx);
 
         // Get the output of the MSE loss function
-        self.get_output(x, target)
+        Self::get_output(x, target)
     }
 
     /// Perform backward pass through the MSE loss function.

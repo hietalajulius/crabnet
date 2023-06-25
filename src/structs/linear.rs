@@ -41,7 +41,7 @@ impl LinearLayer {
     }
 
     /// Get the output of the linear layer.
-    pub fn get_output(&self, x: &Array2<f64>, W: &Array2<f64>, b: &Array2<f64>) -> Array2<f64> {
+    pub fn get_output(x: &Array2<f64>, W: &Array2<f64>, b: &Array2<f64>) -> Array2<f64> {
         // Formula: (W * x^T + b)^T
         (W.dot(&x.t()) + b).t().to_owned()
     }
@@ -50,7 +50,7 @@ impl LinearLayer {
     pub fn forward(&mut self, x: &Array2<f64>) -> Array2<f64> {
         // Store the input gradient for later use in backward pass
         self.dy_dW = Some(x.to_owned());
-        self.get_output(x, &self.W, &self.b)
+        Self::get_output(x, &self.W, &self.b)
     }
 
     /// Perform backward pass through the linear layer.

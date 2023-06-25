@@ -12,7 +12,7 @@ impl ReLU {
     }
 
     /// Get the output of the ReLU activation function.
-    pub fn get_output(&self, x: &Array2<f64>) -> Array2<f64> {
+    pub fn get_output(x: &Array2<f64>) -> Array2<f64> {
         // Apply ReLU function element-wise to input x
         x.mapv(|val| f64::max(val, 0.0))
     }
@@ -26,7 +26,7 @@ impl ReLU {
         self.dy_dx = Some(dy_dx);
 
         // Get the output of the ReLU activation function
-        self.get_output(x)
+        Self::get_output(x)
     }
 
     /// Perform backward pass through the ReLU activation function.
