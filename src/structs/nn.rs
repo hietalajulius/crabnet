@@ -2,7 +2,6 @@ use ndarray::Array2;
 use plotters::prelude::{BitMapBackend, ChartBuilder, IntoDrawingArea};
 use plotters::series::SurfaceSeries;
 use plotters::style::{Color, HSLColor, BLACK, WHITE};
-
 use rand::rngs::StdRng;
 
 use super::{linear::LinearLayer, relu::ReLU};
@@ -23,6 +22,7 @@ impl NN {
         out_features: usize,
         rng: &mut StdRng,
     ) -> Self {
+        // Initialize the neural network with the given layer sizes
         NN {
             fc1: LinearLayer::new(in_features, hidden_size1, rng),
             activation_fn1: ReLU::new(),
@@ -33,6 +33,7 @@ impl NN {
     }
 
     pub fn get_output(&self, x: &Array2<f64>) -> Array2<f64> {
+        // Forward pass through the neural network to compute the output
         let x = self
             .activation_fn1
             .get_output(&self.fc1.get_output(x, &self.fc1.W, &self.fc1.b));
@@ -44,12 +45,14 @@ impl NN {
     }
 
     pub fn forward(&mut self, x: &Array2<f64>) -> Array2<f64> {
+        // Forward pass through the neural network for training
         let x = self.activation_fn1.forward(&self.fc1.forward(x));
         let x = self.activation_fn2.forward(&self.fc2.forward(&x));
         self.fc3.forward(&x)
     }
 
     pub fn backward(&mut self, dy: &Array2<f64>) -> Array2<f64> {
+        // Backward pass through the neural network for training
         let dy = self.fc3.backward(dy);
         let dy = self.activation_fn2.backward(&dy);
         let dy = self.fc2.backward(&dy);
@@ -89,7 +92,7 @@ impl NN {
                     |x: f64, y: f64| {
                         self.get_output(
                             &Array2::from_shape_vec((1, 2), vec![x, y])
-                                .expect("Unale to covert input to correct shape"),
+                                .expect("Unable to convert input to correct shape"),
                         )[[0, 0]]
                     },
                 )

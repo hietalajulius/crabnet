@@ -1,4 +1,4 @@
-**Note: This project is not affiliated with the Rust Foundation.**
+**Note: This project is not affiliated with the Rust Foundation([🤦](https://twitter.com/rust_foundation/status/1644132378858729474?s=20)).**
 
 # crabnn 🦀🕸️ 
 
@@ -20,13 +20,13 @@ The training process involves generating random `(x, y)` coordinates within a ce
 
 To run and reproduce the results, follow the steps below:
 
-1.  Install Rust: Make sure that Rust is installed on your system. If Rust is not yet installed, you can easily install it from the official Rust website: [https://www.rust-lang.org/](https://www.rust-lang.org/)
+1.  Install Rust: Make sure that Rust is installed on your system. If Rust is not yet installed, you can easily install it from the official Rust website: [https://www.rust-lang.org/](https://www.rust-lang.org/) ([may require a credit card](https://twitter.com/rust_foundation/status/1644132378858729474?s=20) 💳 in the future)
     
-2.  Clone the Project: Clone the project repository from the source location.
+2.  Clone the Project
     
-3.  Navigate to the Project Directory: Open a terminal or command prompt and navigate to the project directory.
+3.  Open a terminal or command prompt and navigate to the project directory.
     
-4.  Build and Run: Execute the following command to build and run the project: `cargo run` 
+4.  Execute the following command to build and run the project: `cargo run` 
     
     The script will initiate the training process of the neural network, and you will see relevant information and progress printed in the console.
     
@@ -38,4 +38,4 @@ To run and reproduce the results, follow the steps below:
     By modifying these parameters, you can fine-tune the neural network's behavior and observe different outcomes.
    
 
-**Please note that this project is not officially affiliated with the Rust Foundation. It is an independent effort to showcase the capabilities of Rust in the context of neural network development while focusing on the underlying mathematical concepts.**
+**Please note that this project is not officially affiliated with the Rust Foundation ([🤦](https://twitter.com/rust_foundation/status/1644132378858729474?s=20)). It is an independent effort to showcase the capabilities of Rust in the context of neural network development while focusing on the underlying mathematical concepts.**
