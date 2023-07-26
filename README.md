@@ -1,6 +1,6 @@
 **Note: This project is not affiliated with the Rust Foundation([🤦](https://twitter.com/rust_foundation/status/1644132378858729474?s=20)).**
 
-# crabnn 🦀🕸️ 
+# crabnet 🦀🕸️ 
 
 ## Building a Simple Neural Network in Rust
 
