@@ -4,7 +4,7 @@
 
 ## Building a Simple Neural Network in Rust
 
-This project aims to showcase the implementation of a simple neural network using the Rust programming language. The primary goal is to provide a clear understanding of the mathematical concepts behind neural networks through a straightforward example.
+This project aims to showcase the implementation of a simple neural network using the Rust programming language. The primary goal is to provide a clear understanding of the mathematical concepts behind neural networks through a straightforward example. Check out the blog post for more details: https://www.juliushietala.com/blog/crabnet-tutorial
 
 ## Example: Estimating the Probability Density Function (PDF) of a 2D Gaussian
 
