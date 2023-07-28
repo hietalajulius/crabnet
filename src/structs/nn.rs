@@ -53,12 +53,6 @@ impl NN {
 
     pub fn backward(&mut self, dy: &Array2<f64>) -> Array2<f64> {
         // Backward pass through the neural network for training
-        // let dy = self.fc3.backward(dy);
-        // let dy = self.activation_fn2.backward(&dy);
-        // let dy = self.fc2.backward(&dy);
-        // let dy = self.activation_fn1.backward(&dy);
-        // self.fc1.backward(&dy)
-
         let mut dy = dy.clone();
         for layer in self.layers.iter_mut().rev() {
             dy = layer.backward(&dy);

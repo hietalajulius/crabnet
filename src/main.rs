@@ -14,7 +14,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut rng = StdRng::seed_from_u64(1);
 
     // Create a new neural network with 2 input features, 8 hidden units in each of the two hidden layers, and 1 output feature
-    let mut nn = NN::new(2, vec![9, 9], 1, &mut rng);
+    let mut nn = NN::new(2, vec![8, 8], 1, &mut rng);
 
     // Create a mean squared error (MSE) loss function
     let mut loss = MSE::new();
@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let batch_size = 16;
 
     // Set the initial learning rate
-    let mut learning_rate = 0.005;
+    let mut learning_rate = 0.002;
 
     // Create a buffer to store the running loss for monitoring training progress
     let mut running_loss = VecDeque::with_capacity(1000);
@@ -75,7 +75,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             layer.sgd(learning_rate);
         }
 
-        if i % 100000 == 0 && i > 1 {
+        if i % 500000 == 0 && i > 1 {
             // Plot the learned probability density function (PDF) at certain iterations
             nn.plot(i)?;
         }
