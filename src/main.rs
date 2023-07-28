@@ -1,18 +1,20 @@
 use crabnn::structs::linear::pdf;
+
 use crabnn::structs::mse::MSE;
 use crabnn::structs::nn::NN;
 use ndarray::{Array1, Array2};
 use rand::rngs::StdRng;
 use rand::Rng;
 use rand::SeedableRng;
+
 use std::collections::VecDeque;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize the random number generator
-    let mut rng = StdRng::seed_from_u64(123);
+    let mut rng = StdRng::seed_from_u64(1);
 
     // Create a new neural network with 2 input features, 8 hidden units in each of the two hidden layers, and 1 output feature
-    let mut nn = NN::new(2, 8, 8, 1, &mut rng);
+    let mut nn = NN::new(2, vec![9, 9], 1, &mut rng);
 
     // Create a mean squared error (MSE) loss function
     let mut loss = MSE::new();
@@ -21,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let batch_size = 16;
 
     // Set the initial learning rate
-    let mut learning_rate = 0.013;
+    let mut learning_rate = 0.005;
 
     // Create a buffer to store the running loss for monitoring training progress
     let mut running_loss = VecDeque::with_capacity(1000);
@@ -68,17 +70,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Iter {:?}, loss: {:?}", i, avg_loss);
         }
 
-        // Update the network's parameters using gradient descent
-        nn.fc1.W = nn.fc1.W - nn.fc1.dL_dW.clone().expect("No gradient registered") * learning_rate;
-        nn.fc1.b = nn.fc1.b - nn.fc1.dL_db.clone().expect("No gradient registered") * learning_rate;
+        // Update the network's parameters using stochastic gradient descent
+        for layer in nn.layers.iter_mut() {
+            layer.sgd(learning_rate);
+        }
 
-        nn.fc2.W = nn.fc2.W - nn.fc2.dL_dW.clone().expect("No gradient registered") * learning_rate;
-        nn.fc2.b = nn.fc2.b - nn.fc2.dL_db.clone().expect("No gradient registered") * learning_rate;
-
-        nn.fc3.W = nn.fc3.W - nn.fc3.dL_dW.clone().expect("No gradient registered") * learning_rate;
-        nn.fc3.b = nn.fc3.b - nn.fc3.dL_db.clone().expect("No gradient registered") * learning_rate;
-
-        if i % 500000 == 0 && i > 1 {
+        if i % 100000 == 0 && i > 1 {
             // Plot the learned probability density function (PDF) at certain iterations
             nn.plot(i)?;
         }

@@ -1,6 +1,8 @@
-use ndarray::{Array2};
+use ndarray::Array2;
 use rand::rngs::StdRng;
 use rand::Rng;
+
+use crate::crabnet::CrabNetLayer;
 
 /// Probability density function used in the example.
 pub fn pdf(x: f64, y: f64) -> f64 {
@@ -25,36 +27,22 @@ pub struct LinearLayer {
     pub dy_dW: Option<Array2<f64>>,
 }
 
-impl LinearLayer {
-    /// Create a new LinearLayer with random weights and biases.
-    pub fn new(in_features: usize, out_features: usize, rng: &mut StdRng) -> Self {
-        let W = Array2::from_shape_fn((out_features, in_features), |_| rng.gen::<f64>());
-        let b = Array2::from_shape_fn((out_features, 1), |_| rng.gen::<f64>());
-
-        LinearLayer {
-            W,
-            b,
-            dL_dW: None,
-            dL_db: None,
-            dy_dW: None,
-        }
-    }
-
+impl CrabNetLayer for LinearLayer {
     /// Get the output of the linear layer.
-    pub fn get_output(x: &Array2<f64>, W: &Array2<f64>, b: &Array2<f64>) -> Array2<f64> {
+    fn get_output(&self, x: &Array2<f64>) -> Array2<f64> {
         // Formula: (W * x^T + b)^T
-        (W.dot(&x.t()) + b).t().to_owned()
+        (self.W.dot(&x.t()) + self.b.clone()).t().to_owned()
     }
 
     /// Perform forward pass through the linear layer.
-    pub fn forward(&mut self, x: &Array2<f64>) -> Array2<f64> {
+    fn forward(&mut self, x: &Array2<f64>) -> Array2<f64> {
         // Store the input gradient for later use in backward pass
         self.dy_dW = Some(x.to_owned());
-        Self::get_output(x, &self.W, &self.b)
+        self.get_output(x)
     }
 
     /// Perform backward pass through the linear layer.
-    pub fn backward(&mut self, dL_dy: &Array2<f64>) -> Array2<f64> {
+    fn backward(&mut self, dL_dy: &Array2<f64>) -> Array2<f64> {
         // Calculate the gradient of the loss with respect to W
         let dL_dW = dL_dy.t().dot(
             &self
@@ -72,8 +60,31 @@ impl LinearLayer {
         self.dL_db = Some(dL_db.to_owned());
 
         // Calculate the gradient of the loss with respect to the input
-        let dL_dx = dL_dy.dot(&self.W);
+        
 
-        dL_dx
+        dL_dy.dot(&self.W)
+    }
+
+    fn sgd(&mut self, learning_rate: f64) {
+        self.W =
+            self.W.clone() - self.dL_dW.clone().expect("No gradient registered") * learning_rate;
+        self.b =
+            self.b.clone() - self.dL_db.clone().expect("No gradient registered") * learning_rate;
+    }
+}
+
+impl LinearLayer {
+    /// Create a new LinearLayer with random weights and biases.
+    pub fn new(in_features: usize, out_features: usize, rng: &mut StdRng) -> Self {
+        let W = Array2::from_shape_fn((out_features, in_features), |_| rng.gen::<f64>());
+        let b = Array2::from_shape_fn((out_features, 1), |_| rng.gen::<f64>());
+
+        LinearLayer {
+            W,
+            b,
+            dL_dW: None,
+            dL_db: None,
+            dy_dW: None,
+        }
     }
 }

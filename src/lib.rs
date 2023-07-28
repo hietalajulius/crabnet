@@ -5,3 +5,5 @@ pub mod structs {
     pub mod nn;
     pub mod relu;
 }
+
+pub mod crabnet;

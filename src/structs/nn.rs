@@ -4,56 +4,66 @@ use plotters::series::SurfaceSeries;
 use plotters::style::{Color, HSLColor, BLACK, WHITE};
 use rand::rngs::StdRng;
 
+use crate::crabnet::CrabNetLayer;
+
 use super::{linear::LinearLayer, relu::ReLU};
 
 pub struct NN {
-    pub fc1: LinearLayer,
-    pub activation_fn1: ReLU,
-    pub fc2: LinearLayer,
-    pub activation_fn2: ReLU,
-    pub fc3: LinearLayer,
+    pub layers: Vec<Box<dyn CrabNetLayer>>,
 }
 
 impl NN {
     pub fn new(
         in_features: usize,
-        hidden_size1: usize,
-        hidden_size2: usize,
+        hidden_sizes: Vec<usize>,
         out_features: usize,
         rng: &mut StdRng,
     ) -> Self {
         // Initialize the neural network with the given layer sizes
-        NN {
-            fc1: LinearLayer::new(in_features, hidden_size1, rng),
-            activation_fn1: ReLU::new(),
-            fc2: LinearLayer::new(hidden_size1, hidden_size2, rng),
-            activation_fn2: ReLU::new(),
-            fc3: LinearLayer::new(hidden_size2, out_features, rng),
+        let mut layers: Vec<Box<dyn CrabNetLayer>> = vec![];
+        let mut input_size = in_features;
+        for output_size in hidden_sizes {
+            layers.push(Box::new(LinearLayer::new(input_size, output_size, rng)));
+            layers.push(Box::new(ReLU::new()));
+            input_size = output_size
         }
+
+        layers.push(Box::new(LinearLayer::new(input_size, out_features, rng)));
+
+        NN { layers }
     }
 
     pub fn get_output(&self, x: &Array2<f64>) -> Array2<f64> {
         // Forward pass through the neural network to compute the output
-        let x = ReLU::get_output(&LinearLayer::get_output(x, &self.fc1.W, &self.fc1.b));
-        let x = ReLU::get_output(&LinearLayer::get_output(&x, &self.fc2.W, &self.fc2.b));
-
-        LinearLayer::get_output(&x, &self.fc3.W, &self.fc3.b)
+        let mut x = x.clone();
+        for layer in &self.layers {
+            x = layer.get_output(&x);
+        }
+        x
     }
 
     pub fn forward(&mut self, x: &Array2<f64>) -> Array2<f64> {
         // Forward pass through the neural network for training
-        let x = self.activation_fn1.forward(&self.fc1.forward(x));
-        let x = self.activation_fn2.forward(&self.fc2.forward(&x));
-        self.fc3.forward(&x)
+        let mut x = x.clone();
+        for layer in self.layers.iter_mut() {
+            x = layer.forward(&x);
+        }
+        x.clone()
     }
 
     pub fn backward(&mut self, dy: &Array2<f64>) -> Array2<f64> {
         // Backward pass through the neural network for training
-        let dy = self.fc3.backward(dy);
-        let dy = self.activation_fn2.backward(&dy);
-        let dy = self.fc2.backward(&dy);
-        let dy = self.activation_fn1.backward(&dy);
-        self.fc1.backward(&dy)
+        // let dy = self.fc3.backward(dy);
+        // let dy = self.activation_fn2.backward(&dy);
+        // let dy = self.fc2.backward(&dy);
+        // let dy = self.activation_fn1.backward(&dy);
+        // self.fc1.backward(&dy)
+
+        let mut dy = dy.clone();
+        for layer in self.layers.iter_mut().rev() {
+            dy = layer.backward(&dy);
+        }
+        dy
     }
 
     pub fn plot(&self, iter: i32) -> Result<(), Box<dyn std::error::Error>> {
