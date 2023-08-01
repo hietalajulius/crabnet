@@ -48,7 +48,7 @@ impl NN {
         for layer in self.layers.iter_mut() {
             x = layer.forward(&x);
         }
-        x.clone()
+        x
     }
 
     pub fn backward(&mut self, dy: &Array2<f64>) -> Array2<f64> {
